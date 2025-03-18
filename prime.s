@@ -114,6 +114,18 @@ loop:
 	movq %rsi, %rsi
 	callq gcd
 
+	cmpq $1, %rax # if gcd(x,i) != 1, return 0
+	jne not_prime
+
+	incq %rsi #increment i by 1
+	jmp loop
+prime_check_done:
+	movq $0x1, %rax
+	retq
+not_prime:
+	xorq %rax, %rax
+	retq
+
 ############################################################
 ##                end of prime routine                    ##
 ############################################################
