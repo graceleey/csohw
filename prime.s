@@ -18,9 +18,15 @@
 modulo:
 
 	# TO DO: write this function
-	
-	xorq	%rax, %rax
-	retq
+	movq %rax, %rdi 
+while_loop:
+	cmpq $0, %rax 
+	jl end_loop
+	subq %rax, %rsi 
+	jmp while_loop
+end_loop:
+	addq %rax, %rsi
+	ret 
 
 ############################################################
 ##                 end of modulo routine                  ##
