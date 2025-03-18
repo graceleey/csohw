@@ -18,15 +18,23 @@
 modulo:
 
 	# TO DO: write this function
-	movq %rax, %rdi 
+	# rdi = x
+	# rsi = y
+	# return value in rax
+	cmpq $0, %rsi # compare y with 0
+	je modulo_zero # if y==0, return 0
+	
 while_loop:
-	cmpq $0, %rax 
+	cmpq %rsi, %rdi 
 	jl end_loop
-	subq %rax, %rsi 
+	subq %rsi, %rdi 
 	jmp while_loop
 end_loop:
-	addq %rax, %rsi
-	ret 
+	movq %rdi, %rax
+	retq
+modulo_zero:
+	xorq %rax, %rax
+	retq
 
 ############################################################
 ##                 end of modulo routine                  ##
@@ -42,8 +50,37 @@ end_loop:
 gcd:
 
 	# TO DO: write this function
+	# x (first arg) -> rdi
+	# y (second arg) -> rsi
+	# return value in rax
 
-	xorq	%rax, %rax
+	cmpq %rdi, %rsi #compare x and y
+	je return_y #if x==y, return y
+	
+	cmpq $0, %rsi #if y==0, return x
+	je return_x
+	
+	#recursive call
+	pushq %rdi # save x on stack
+	pushq %rsi # save y on stack
+	
+	movq %rdi, %rdi
+	movq %rsi, %rsi
+	callq modulo #compute modulo (x,y)
+	
+	movq %rsi, %rdi # set first arg to y
+	movq %rax, %rsi  # set second arg to modulo(x,y). rax contains the result of modulo(x,y)
+	callq gcd # recursive call to gcd(y, modulo(x,y))
+	
+	pop %rsi # restore y
+	pop %rdi # restore x
+	retq #return result in rax
+	
+return_x:
+	mov %rdi, %rax #return x
+	retq
+return_y:
+	mov %rsi, %rax #return y
 	retq
 
 ############################################################
