@@ -97,9 +97,22 @@ return_y:
 prime:
 
 	# TO DO: write this function
+	# rdi = x (number to check if prime)
+	# return value in rax. 1 if prime, 0 if not
 
-	xorq	%rax, %rax
-	retq
+	cmpq $0x1, %rdi # if x <= 1, return 0 (NOT PRIME)
+	jle not_prime
+	
+	#start loop from i=2 to i<x
+	movq $0x2, %rsi # set i = 2 (starting point)
+loop: 	
+	cmpq %rdi, %rsi #compare i with x
+	jge prime_check_done
+
+	#call gcd(x,i) using x in rdi and i in rsi
+	movq %rdi, %rdi
+	movq %rsi, %rsi
+	callq gcd
 
 ############################################################
 ##                end of prime routine                    ##
